@@ -122,12 +122,9 @@ services:
     ports:
       - "${DIAL_CHAT_HOST_PORT}:3000"
     depends_on:
-      themes:
-        condition: service_started
-      core:
-        condition: service_started
-      keycloak:
-        condition: service_healthy
+      - themes
+      - core
+      - keycloak
     restart: always
 
   influxdb:
@@ -200,7 +197,7 @@ services:
   admin-backend:
     image: epam/ai-dial-admin-backend:development
     platform: linux/amd64
-    user: root
+    user: ${UID:-root}
     environment:
       CONFIG_EXPORT_OUTPUTFILE_PATH: /app/config/config.json
       CORE_CLIENT_URL: "http://core:8080"
@@ -221,6 +218,8 @@ services:
       METRICS_ENABLED: "true"
       METRICS_STORAGE_HOST: "http://influxdb:8086"
       METRICS_STORAGE_TOKEN: ${INFLUXDB_ADMIN_TOKEN}
+    depends_on:
+      - keycloak
     volumes:
       - ${DIAL_DIR:-.}/admin/data:/app/data
       - ${DIAL_DIR:-.}/core:/app/config
@@ -242,8 +241,6 @@ services:
     ports:
       - "${DIAL_ADMIN_FRONTEND_HOST_PORT}:3000"
     depends_on:
-      keycloak:
-        condition: service_healthy
-      admin-backend:
-        condition: service_healthy
+      - keycloak
+      - admin-backend
     restart: always
