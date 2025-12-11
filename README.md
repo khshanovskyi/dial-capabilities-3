@@ -13,7 +13,7 @@
     </a>
 </h4>
 
-Here we will configure [DIAL Admin](https://docs.dialx.ai/tutorials/admin/home) application to configure models, applications and other stuff + analytics.
+Here we will set up [DIAL Admin](https://docs.dialx.ai/tutorials/admin/home) application to configure models, applications and other stuff + analytics.
 
 ![DIAL Admin](/screenshots/services.png)
 
