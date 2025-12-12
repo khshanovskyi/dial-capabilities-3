@@ -14,7 +14,7 @@ services:
     mem_limit: 2200M
 
   core:
-    image: epam/ai-dial-core:development
+    image: epam/ai-dial-core:0.38.0
     platform: linux/amd64
     environment:
       'JAVA_OPTS': '-Dgflog.config=/opt/settings/gflog.xml'
@@ -33,6 +33,7 @@ services:
       'aidial.storage.createBucket': 'true'
       'aidial.storage.overrides': '{"jclouds.filesystem.basedir": "data"}'
       'aidial.applications.includeCustomApps': 'true'
+      'config.reload': 3000
     ports:
       - "${DIAL_CORE_HOST_PORT}:8080"
     volumes:
@@ -119,6 +120,7 @@ services:
       THEMES_CONFIG_HOST: "http://themes:8080"
       NEXTAUTH_URL: "http://localhost:${DIAL_CHAT_HOST_PORT}"
       NEXTAUTH_URL_INTERNAL: "http://chat:3000"
+      DEFAULT_MODEL: "gpt-4o"
     ports:
       - "${DIAL_CHAT_HOST_PORT}:3000"
     depends_on:
@@ -238,6 +240,7 @@ services:
       AUTH_KEYCLOAK_CLIENT_ID: "dial-admin-console"
       AUTH_KEYCLOAK_SECRET: "${AUTH_KEYCLOAK_SECRET}"
       ADMIN_ROLE_NAMES: 'ConfigAdmin,admin'
+      THEMES_CONFIG_URL: "http://themes:8080"
     ports:
       - "${DIAL_ADMIN_FRONTEND_HOST_PORT}:3000"
     depends_on:

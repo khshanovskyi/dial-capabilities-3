@@ -1,7 +1,9 @@
 import os
 from typing import Union
 
+import uvicorn
 from aidial_client import AsyncDial
+from aidial_sdk import DIALApp
 
 from aidial_sdk.chat_completion import ChatCompletion, Request, Response
 from aidial_sdk.deployment.configuration import ConfigurationRequest, ConfigurationResponse
@@ -29,12 +31,11 @@ class EssayAssistantApplication(ChatCompletion):
 
     async def chat_completion(self, request: Request, response: Response) -> None:
         client: AsyncDial = AsyncDial(
-            base_url=os.getenv('DIAL_URL', "http://localhost:8080"),
+            base_url=os.getenv('DIAL_URL', "http://localhost:8081"),
             api_key=request.api_key,
             api_version="2025-01-01-preview"
         )
 
-        # print(request.messages[-1])
         print(request.messages)
 
         with response.create_single_choice() as choice:
@@ -82,3 +83,11 @@ class EssayAssistantApplication(ChatCompletion):
                 }
             }
         }
+
+
+app: DIALApp = DIALApp()
+
+app.add_chat_completion(deployment_name="essay-assistant-gpt", impl=EssayAssistantApplication("gpt-4o"))
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=5025, host="0.0.0.0")
